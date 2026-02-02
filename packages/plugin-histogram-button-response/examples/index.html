@@ -11,7 +11,11 @@
 
   <body></body>
   <script>
-    const jsPsych = initJsPsych();
+    const jsPsych = initJsPsych({
+      on_finish: function () {
+        jsPsych.data.displayData();
+      },
+    });
 
     // function to sample normally distributed data
     function sampleNormal(mean, stdDev) {

@@ -24,8 +24,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/themusiclab/pose.git",
-    "directory": "plugin-histogram-button-response"
+    "url": "https://github.com/jspsych/jspsych-contrib.git",
+    "directory": "packages/plugin-histogram-button-response"
   },
   "keywords": [
     "jsPsych"
@@ -36,9 +36,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/themusiclab/pose/issues"
+    "url": "https://github.com/jspsych/jspsych-contrib/issues"
   },
-  "homepage": "https://github.com/themusiclab/pose/tree/main/plugin-histogram-button-response/README.md",
+  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-histogram-button-response",
   "dependencies": {
     "@citation-js/core": "^0.7.14",
     "@citation-js/plugin-bibtex": "^0.7.14",
