@@ -24,8 +24,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "",
-    "directory": "./"
+    "url": "git+https://github.com/jspsych/jspsych-contrib.git",
+    "directory": "packages/plugin-barchart-button-response"
   },
   "keywords": [
     "jsPsych"
@@ -36,9 +36,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "/issues"
+    "url": "https://github.com/jspsych/jspsych-contrib/issues"
   },
-  "homepage": "/plugin-barchart-button-response/README.md",
+  "homepage": "https://github.com/jspsych/jspsych-contrib/tree/main/packages/plugin-barchart-button-response",
   "dependencies": {
     "@citation-js/core": "^0.7.14",
     "@citation-js/plugin-bibtex": "^0.7.14",

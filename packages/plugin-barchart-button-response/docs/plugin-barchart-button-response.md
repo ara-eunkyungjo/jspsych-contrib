@@ -10,28 +10,22 @@ This plugin uses [Chart.js](https://www.chartjs.org/) under the hood, and suppor
 
 ---
 
-## Loading (Note: these CDN resources don't currently exist... but maybe will eventually?)
+## Loading
 
 Using the CDN-hosted JavaScript file:
 
 ```js
-<script src="https://unpkg.com/@jspsych/plugin-barchart-button-response@VERSION_HERE"></script>
-```
-
-Using the JavaScript file downloaded from a GitHub release dist archive:
-
-```js
-<script src="jspsych/plugin-barchart-button-response.js"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-barchart-button-response"></script>
 ```
 
 Using NPM:
 
-```
-npm install @jspsych/plugin-barchart-button-response
+```sh
+npm install @jspsych-contrib/plugin-barchart-button-response
 ```
 
 ```js
-import jsPsychBarchartButtonresponse from "@jspsych/plugin-barchart-button-response";
+import jsPsychBarchartButtonResponse from "@jspsych-contrib/plugin-barchart-button-response";
 ```
 
 ## Compatibility
@@ -44,7 +38,7 @@ import jsPsychBarchartButtonresponse from "@jspsych/plugin-barchart-button-respo
 
 | Name               | Type             | Default       | Description                                                                                            |
 | ------------------ | ---------------- | ------------- | ------------------------------------------------------------------------------------------------------ |
-| `description_text` | HTML string      | `undefined`   | Optional text shown above the chart for instructions or context.                                       |
+| `description_text` | HTML string      | `null`   | Optional text shown above the chart for instructions or context.                                       |
 | `chart_data`       | Array of objects | `undefined`   | Required data for the chart. Each object must have a `key` (x-axis label) and `value` (y-axis height). |
 | `base_color`       | String (color)   | `"#02c39a80"` | Color for non-highlighted bars.                                                                        |
 | `highlight_value`  | String           | `undefined`   | The `key` of the bar to be visually highlighted.                                                       |
@@ -60,8 +54,9 @@ import jsPsychBarchartButtonresponse from "@jspsych/plugin-barchart-button-respo
 **Default `button_html` function:**
 
 ```ts
-(choice: string, choice_index: number) =>
-  `<button class="jspsych-btn">${choice}</button>`;
+function (choice: string, choice_index: number) {
+  return `<button class="jspsych-btn">${choice}</button>`;
+}
 ```
 
 ---
@@ -106,10 +101,3 @@ const trial = {
 
 - If both `grid_rows` and `grid_columns` are `null` and `button_layout` is `"grid"`, an error will be thrown. One must be specified.
 - The plugin currently assumes static size for the chart canvas. You can customize via CSS or extend the `createChartContainer()` logic.
-
----
-
-## Author / Citation
-
-[Courtney B. Hilton](https://github.com/courtney-bryce-hilton)  
-If you use this plugin in your research, please cite the corresponding repository or paper when available.

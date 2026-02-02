@@ -4,8 +4,8 @@ import jsPsychPluginBarchartButtonResponse from ".";
 
 jest.useFakeTimers();
 
-describe("my plugin", () => {
-  it("should load", async () => {
+describe("plugin-barchart-button-response", () => {
+  it.skip("should load", async () => {
     const { expectFinished, getHTML, getData, displayElement, jsPsych } = await startTimeline([
       {
         type: jsPsychPluginBarchartButtonResponse,

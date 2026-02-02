@@ -1,6 +1,7 @@
-import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 import Chart, { ChartData } from "chart.js/auto";
 import annotationPlugin from "chartjs-plugin-annotation";
+import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
+
 import { version } from "../package.json";
 
 Chart.register(annotationPlugin);
@@ -19,7 +20,7 @@ const info = <const>{
      */
     description_text: {
       type: ParameterType.HTML_STRING,
-      default: undefined,
+      default: null,
     },
     /**
      * An array of data points to be displayed in the bar chart. Each data point should be an object with a `key` (string) and `value` (number).
@@ -145,26 +146,21 @@ class BarchartButtonResponsePlugin implements JsPsychPlugin<Info> {
   // DOM CREATION HELPERS //
   //////////////////////////
 
-  private createDescriptiontext(
-    html: string,
-    display_element: HTMLElement
-  ): void {
+  private createDescriptionText(html: string, display_element: HTMLElement): void {
     const descriptionEl = document.createElement("div");
     descriptionEl.innerHTML = html;
     descriptionEl.style.marginBottom = "20px";
     display_element.appendChild(descriptionEl);
   }
 
-  private createChartContainer(
-    display_element: HTMLElement
-  ): HTMLCanvasElement {
+  private createChartContainer(display_element: HTMLElement): HTMLCanvasElement {
     const chartContainer = document.createElement("div");
     chartContainer.style.width = "600px";
     chartContainer.style.height = "400px";
     display_element.appendChild(chartContainer);
 
     const canvas = document.createElement("canvas");
-    canvas.id = "chartCanvas";
+    canvas.id = "jspsych-barchart-button-response-canvas";
     chartContainer.appendChild(canvas);
 
     return canvas;
@@ -175,14 +171,14 @@ class BarchartButtonResponsePlugin implements JsPsychPlugin<Info> {
     after_response: (choiceIndex: number) => void
   ): HTMLDivElement {
     const buttonGroupElement = document.createElement("div");
-    buttonGroupElement.id = "jspsych-html-button-response-btngroup";
+    buttonGroupElement.id = "jspsych-barchart-button-response-btngroup";
 
     if (trial.button_layout === "grid") {
       buttonGroupElement.classList.add("jspsych-btn-group-grid");
 
       if (trial.grid_rows === null && trial.grid_columns === null) {
         throw new Error(
-          "You cannot set `grid_rows` to `null` without providing a value for `grid_columns`."
+          "plugin-barchart-button-response: You cannot set `grid_rows` to `null` without providing a value for `grid_columns`."
         );
       }
 
@@ -203,10 +199,7 @@ class BarchartButtonResponsePlugin implements JsPsychPlugin<Info> {
     }
 
     for (const [choiceIndex, choice] of trial.choices.entries()) {
-      buttonGroupElement.insertAdjacentHTML(
-        "beforeend",
-        trial.button_html(choice, choiceIndex)
-      );
+      buttonGroupElement.insertAdjacentHTML("beforeend", trial.button_html(choice, choiceIndex));
       const buttonElement = buttonGroupElement.lastChild as HTMLElement;
       buttonElement.dataset.choice = choiceIndex.toString();
       buttonElement.addEventListener("click", () => {
@@ -272,8 +265,9 @@ class BarchartButtonResponsePlugin implements JsPsychPlugin<Info> {
   ): void {
     const ctx = canvas.getContext("2d");
     if (!ctx) {
-      console.error("Your browser does not support canvas rendering.");
-      return;
+      throw new Error(
+        "plugin-barchart-button-response: Your browser does not support canvas rendering."
+      );
     }
 
     new Chart(ctx, {
@@ -327,15 +321,10 @@ class BarchartButtonResponsePlugin implements JsPsychPlugin<Info> {
               highlightLabel: trial.highlight_value != null && {
                 type: "label",
                 xValue: trial.highlight_value.toString(),
-                yValue:
-                  dataPoints.find((d) => d.key === trial.highlight_value)
-                    ?.value ?? 0,
+                yValue: dataPoints.find((d) => d.key === trial.highlight_value)?.value ?? 0,
                 backgroundColor: "rgba(0,0,0,0)",
                 borderColor: "rgba(0,0,0,0)",
-                content: trial.highlight_label != null && [
-                  trial.highlight_label,
-                  "↓",
-                ],
+                content: trial.highlight_label != null && [trial.highlight_label, "↓"],
                 font: {
                   size: 18,
                   weight: "bold",
@@ -360,7 +349,6 @@ class BarchartButtonResponsePlugin implements JsPsychPlugin<Info> {
   private endTrial(response: { rt: number; button: number }): void {
     const trial_data = {
       rt: response.rt,
-      // stimulus: trial.stimulus, // uncomment if needed
       response: response.button,
     };
 
@@ -390,12 +378,8 @@ class BarchartButtonResponsePlugin implements JsPsychPlugin<Info> {
   //////////////////////////
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
-    // clear the display element
-    display_element.innerHTML = "";
-
     // create and append the description text, if provided
-    trial.description_text &&
-      this.createDescriptiontext(trial.description_text, display_element);
+    trial.description_text && this.createDescriptionText(trial.description_text, display_element);
 
     // create container for chart
     const canvas = this.createChartContainer(display_element);
