@@ -201,7 +201,7 @@ class DensityChartButtonResponsePlugin implements JsPsychPlugin<Info> {
     display_element.appendChild(chartContainer);
 
     const canvas = document.createElement("canvas");
-    canvas.id = "jspsych-densitychart-button-response-canvas";
+    canvas.id = "jspsych-densitychart-button-response-chart";
     chartContainer.appendChild(canvas);
 
     return canvas;
@@ -260,7 +260,7 @@ class DensityChartButtonResponsePlugin implements JsPsychPlugin<Info> {
   ): void {
     if (trial.highlight_label !== null && trial.highlight_score === null) {
       throw new Error(
-        "plugin-densitychart-button-response `highlight_label` is defined but `highlight_score` is missing.\n" +
+        "plugin-densitychart-button-response: `highlight_label` is defined but `highlight_score` is missing.\n" +
           "A highlight label cannot be shown without a `highlight_score` value."
       );
     }

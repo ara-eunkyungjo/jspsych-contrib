@@ -198,7 +198,7 @@ class HistogramButtonResponsePlugin implements JsPsychPlugin<Info> {
     display_element.appendChild(container);
 
     const canvas = document.createElement("canvas");
-    canvas.id = "jspsych-histogram-button-response-canvas";
+    canvas.id = "jspsych-histogram-button-response-chart";
     container.appendChild(canvas);
 
     return canvas;
@@ -212,11 +212,11 @@ class HistogramButtonResponsePlugin implements JsPsychPlugin<Info> {
     group.id = "jspsych-histogram-button-response-btngroup";
     group.classList.add("jspsych-btn-group-flex");
 
-    for (const [i, choice] of trial.choices.entries()) {
-      group.insertAdjacentHTML("beforeend", trial.button_html(choice, i));
+    for (const [choiceIndex, choice] of trial.choices.entries()) {
+      group.insertAdjacentHTML("beforeend", trial.button_html(choice, choiceIndex));
       const button = group.lastChild as HTMLElement;
-      button.dataset.choice = i.toString();
-      button.addEventListener("click", () => after_response(i));
+      button.dataset.choice = choiceIndex.toString();
+      button.addEventListener("click", () => after_response(choiceIndex));
     }
 
     return group;
