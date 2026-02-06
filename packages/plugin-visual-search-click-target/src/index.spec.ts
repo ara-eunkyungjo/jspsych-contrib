@@ -85,4 +85,79 @@ describe("visual-search-click-target plugin", () => {
     expect(data.correct).toBe(true);
     expect(data.clicked_index).toBeNull();
   });
+
+  it("should place images at custom positions when image_positions is provided", async () => {
+    const customPositions = [
+      { x: 10, y: 20 },
+      { x: 50, y: 50 },
+      { x: 80, y: 70 },
+    ];
+    const { displayElement } = await startTimeline([
+      {
+        type: jsPsychPluginVisualSearchClickTarget,
+        images: ["img1.png", "img2.png", "img3.png"],
+        target_present: true,
+        target_index: 0,
+        image_positions: customPositions,
+      },
+    ]);
+
+    const imgs = displayElement.querySelectorAll("img");
+    expect(imgs[0].style.left).toBe("10%");
+    expect(imgs[0].style.top).toBe("20%");
+    expect(imgs[1].style.left).toBe("50%");
+    expect(imgs[1].style.top).toBe("50%");
+    expect(imgs[2].style.left).toBe("80%");
+    expect(imgs[2].style.top).toBe("70%");
+
+    // Clean up
+    (imgs[0] as HTMLImageElement).click();
+  });
+
+  it("should include images and image_positions in trial data", async () => {
+    const customPositions = [
+      { x: 10, y: 20 },
+      { x: 50, y: 50 },
+    ];
+    const imageList = ["target.png", "distractor.png"];
+    const { expectFinished, getData, displayElement } = await startTimeline([
+      {
+        type: jsPsychPluginVisualSearchClickTarget,
+        images: imageList,
+        target_present: true,
+        target_index: 0,
+        image_positions: customPositions,
+      },
+    ]);
+
+    const targetImg = displayElement.querySelector('img[data-index="0"]') as HTMLImageElement;
+    targetImg.click();
+
+    await expectFinished();
+
+    const data = getData().values()[0];
+    expect(data.images).toEqual(imageList);
+    expect(data.image_positions).toEqual(customPositions);
+  });
+
+  it("should include randomly generated image_positions in trial data", async () => {
+    const { expectFinished, getData, displayElement } = await startTimeline([
+      {
+        type: jsPsychPluginVisualSearchClickTarget,
+        images: ["img1.png", "img2.png"],
+        target_present: false,
+      },
+    ]);
+
+    const absentButton = displayElement.querySelector("button");
+    absentButton.click();
+
+    await expectFinished();
+
+    const data = getData().values()[0];
+    expect(data.image_positions).toBeDefined();
+    expect(data.image_positions.length).toBe(2);
+    expect(data.image_positions[0]).toHaveProperty("x");
+    expect(data.image_positions[0]).toHaveProperty("y");
+  });
 });

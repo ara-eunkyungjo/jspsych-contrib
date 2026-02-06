@@ -15,6 +15,7 @@ In addition to the [parameters available in all plugins](https://www.jspsych.org
 | search_area_width   | FLOAT            | `90`               | Width of the search area as a percentage of viewport width (vw). |
 | search_area_height  | FLOAT            | `80`               | Height of the search area as a percentage of viewport height (vh). |
 | background_color    | STRING           | `"#ffffff"`        | Background color of the search display. |
+| image_positions     | ARRAY of OBJECT  | `null`             | Array of `{x, y}` objects specifying the center position of each image as percentages (0-100) of the search area. `x` is the horizontal position and `y` is the vertical position. If `null`, positions are generated randomly with non-overlapping placement. When provided, the array must have the same length as `images`. |
 
 ## Data Generated
 
@@ -26,6 +27,8 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 | response       | STRING  | `"target"` if an image was clicked, `"absent"` if the absent button was clicked. |
 | correct        | BOOL    | `true` if the response was correct. When `target_present` is `true`, the response is correct if the participant clicked the image at `target_index`. When `target_present` is `false`, the response is correct if the participant clicked the absent button. |
 | clicked_index  | INT     | The index of the clicked image in the `images` array. `null` if the absent button was clicked. |
+| images         | ARRAY of STRING | The image URLs that were displayed in the search array. |
+| image_positions | ARRAY of OBJECT | Array of `{x, y}` objects recording the position of each image as percentages of the search area, in the same order as `images`. Present regardless of whether custom or random positions were used. |
 
 ## Install
 
@@ -86,5 +89,21 @@ var trial = {
   search_area_width: 80,
   search_area_height: 70,
   background_color: '#cccccc',
+};
+```
+
+### Custom image positions
+
+```javascript
+var trial = {
+  type: jsPsychVisualSearchClickTarget,
+  images: ['img/target.png', 'img/distractor1.png', 'img/distractor2.png'],
+  target_present: true,
+  target_index: 0,
+  image_positions: [
+    { x: 50, y: 50 },  // target in center
+    { x: 20, y: 30 },  // distractor upper-left area
+    { x: 80, y: 70 },  // distractor lower-right area
+  ],
 };
 ```

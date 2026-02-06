@@ -42,6 +42,23 @@ const info = <const>{
       type: ParameterType.STRING,
       default: "#ffffff",
     },
+    /** Array of {x, y} objects specifying the position of each image as percentages (0-100)
+     * of the search area dimensions. x and y specify the center of the image.
+     * If null, positions are generated randomly with non-overlapping placement.
+     * The array must have the same length as `images`. */
+    image_positions: {
+      type: ParameterType.COMPLEX,
+      array: true,
+      default: null,
+      nested: {
+        x: {
+          type: ParameterType.FLOAT,
+        },
+        y: {
+          type: ParameterType.FLOAT,
+        },
+      },
+    },
   },
   data: {
     /** Response time in milliseconds from display onset */
@@ -59,6 +76,16 @@ const info = <const>{
     /** Index of the clicked image in the images array (null if absent box was clicked) */
     clicked_index: {
       type: ParameterType.INT,
+    },
+    /** The images displayed in the search array */
+    images: {
+      type: ParameterType.STRING,
+      array: true,
+    },
+    /** The x and y positions of each image as percentages of the search area */
+    image_positions: {
+      type: ParameterType.COMPLEX,
+      array: true,
     },
   },
   citations: "__CITATIONS__",
@@ -126,13 +153,25 @@ class VisualSearchClickTargetPlugin implements JsPsychPlugin<Info> {
       margin: ${(100 - trial.search_area_height) / 2}vh 0;
     `;
 
-    // Generate random non-overlapping positions
-    const positions = this.generatePositions(
-      trial.images.length,
-      trial.image_size,
-      trial.search_area_width,
-      trial.search_area_height
-    );
+    // Determine image positions: use custom positions if provided, otherwise generate random
+    let positions: Array<{ x: number; y: number }>;
+
+    if (trial.image_positions != null) {
+      if (trial.image_positions.length !== trial.images.length) {
+        throw new Error(
+          `visual-search-click-target plugin: image_positions array length (${trial.image_positions.length}) ` +
+            `must match images array length (${trial.images.length}).`
+        );
+      }
+      positions = trial.image_positions;
+    } else {
+      positions = this.generatePositions(
+        trial.images.length,
+        trial.image_size,
+        trial.search_area_width,
+        trial.search_area_height
+      );
+    }
 
     // Create image elements
     const imageElements: HTMLImageElement[] = [];
@@ -147,6 +186,7 @@ class VisualSearchClickTargetPlugin implements JsPsychPlugin<Info> {
         object-fit: contain;
         left: ${positions[index].x}%;
         top: ${positions[index].y}%;
+        transform: translate(-50%, -50%);
         cursor: pointer;
       `;
       imageElements.push(img);
@@ -182,6 +222,8 @@ class VisualSearchClickTargetPlugin implements JsPsychPlugin<Info> {
         response: response,
         correct: correct,
         clicked_index: clickedIndex,
+        images: trial.images,
+        image_positions: positions,
       });
     };
 
@@ -227,9 +269,11 @@ class VisualSearchClickTargetPlugin implements JsPsychPlugin<Info> {
       let attempts = 0;
 
       while (!placed && attempts < maxAttempts) {
-        // Generate random position (leaving margin for image size)
-        const x = Math.random() * (100 - imageSizePercent);
-        const y = Math.random() * (100 - imageSizePercentY);
+        // Generate random center position (leaving margin for half image size on each side)
+        const halfW = imageSizePercent / 2;
+        const halfH = imageSizePercentY / 2;
+        const x = halfW + Math.random() * (100 - imageSizePercent);
+        const y = halfH + Math.random() * (100 - imageSizePercentY);
 
         // Check for overlap with existing positions
         let overlaps = false;
@@ -253,8 +297,10 @@ class VisualSearchClickTargetPlugin implements JsPsychPlugin<Info> {
 
       // If we couldn't place without overlap, place anyway (fallback)
       if (!placed) {
-        const x = Math.random() * (100 - imageSizePercent);
-        const y = Math.random() * (100 - imageSizePercentY);
+        const halfW = imageSizePercent / 2;
+        const halfH = imageSizePercentY / 2;
+        const x = halfW + Math.random() * (100 - imageSizePercent);
+        const y = halfH + Math.random() * (100 - imageSizePercentY);
         positions.push({ x, y });
       }
     }
