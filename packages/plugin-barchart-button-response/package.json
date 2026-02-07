@@ -1,5 +1,5 @@
 {
-  "name": "plugin-barchart-button-response",
+  "name": "@jspsych-contrib/plugin-barchart-button-response",
   "version": "0.0.1",
   "description": "This plugin shows a barchart of values with an optional parameter to highlight a particular bar of interest (such as one corresponding to a participant's score)",
   "type": "module",

@@ -1,5 +1,5 @@
 {
-  "name": "plugin-histogram-button-response",
+  "name": "@jspsych-contrib/plugin-histogram-button-response",
   "version": "0.0.1",
   "description": "Displays a histogram of results to show the participant on a trial",
   "type": "module",

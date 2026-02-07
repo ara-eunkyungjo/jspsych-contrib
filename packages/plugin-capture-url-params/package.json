@@ -1,5 +1,5 @@
 {
-  "name": "plugin-capture-url-params",
+  "name": "@jspsych-contrib/plugin-capture-url-params",
   "version": "0.0.1",
   "description": "Captures URL parameters and saves them in the data.",
   "type": "module",
