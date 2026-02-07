@@ -11,7 +11,7 @@ The `redirect-to-url` plugin is designed to smoothly redirect participants to an
 Using the CDN-hosted JavaScript file:
 
 ```html
-<script src="https://unpkg.com/@jspsych-contrib/plugin-redirect-to-url@0.0.1"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-redirect-to-url@1.0.0"></script>
 ```
 
 Using NPM:
