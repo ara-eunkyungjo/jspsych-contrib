@@ -11,7 +11,7 @@ By default, the plugin captures all available URL parameters. You can also speci
 Using the CDN-hosted JavaScript file:
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-capture-url-params@0.0.1"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-capture-url-params@1.0.0"></script>
 ```
 
 Using NPM:
